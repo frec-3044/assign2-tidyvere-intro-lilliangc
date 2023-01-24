@@ -104,6 +104,7 @@ df3 <- df3 |> mutate(year = year(datetime))
 In the analysis below, you will need a column that is the month.  Apply the function [`month()`](https://r4ds.hadley.nz/datetimes.html#date-time-components) from the lubridate package to the `datetime` column and save the updated data frame. Hint: you will use the [`mutate` function](https://r4ds.hadley.nz/data-transform.html#sec-mutate) 
 
 ```{r}
+df3 <- df3 |> mutate(month = month(datetime))
 
 ```
 
@@ -112,6 +113,7 @@ In the analysis below, you will need a column that is the month.  Apply the func
 To finalize your cleaned dataset, order the values in the columns by Reservoir (A-Z).  Hint:  use [`arrange`](https://r4ds.hadley.nz/data-transform.html#arrange)
 
 ```{r}
+df3 <- df3 |> arrange(Reservoir)
 
 ```
 
@@ -125,6 +127,7 @@ Exercise 3 is focused on high level summary statistics.
 How many different reservoirs are in the dataset and what are their names? Hint: use the [`distinct`](https://r4ds.hadley.nz/data-transform.html#distinct) function
 
 ```{r}
+df3 |> distinct(Reservoir)
 
 ```
 
@@ -133,6 +136,8 @@ How many different reservoirs are in the dataset and what are their names? Hint:
 Which reservoir has the highest mean surface chlorophyll-a? Hint: use `group_by()` and `summarize()` [combination](https://r4ds.hadley.nz/data-transform.html#groups)
 
 ```{r}
+df3 |> group_by(Reservoir) |> summarize(meanChla = mean(Chla_ugL))
+
 
 ```
 
