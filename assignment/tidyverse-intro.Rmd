@@ -13,6 +13,7 @@ This module represent the "Whole Game" for data science in R. In this module you
 Be sure to load the following packages
 
 ```{r}
+#install packages("tidyverse")
 library(tidyverse)
 library(lubridate)
 ```
@@ -37,6 +38,12 @@ The first exercise is focused on data visualization so you will start with a fil
 ```{r}
 df2 <- df |> 
   filter(Reservoir == "FCR" & Site == 50 & Date == as_datetime("2021-05-28 10:48:31"))
+
+#how to find number of rows and columns
+nrow(df)
+nrow(df2)
+ncol(df)
+ncol(df2)
 ```
 
 ## Question 1:
@@ -49,6 +56,13 @@ df2 <- df |>
 [Plot](https://r4ds.hadley.nz/data-visualize.html#two-numerical-variables) and *describe* the relationship between temperature and depth.  What might explain the pattern? Hint: use the point geom
 
 ```{r}
+#Gives a quick view of the data table
+head(df2)
+
+ggplot(df2, aes(x = Depth_m, y = Temp_C)) + 
+  geom_point() +
+  labs(x = "Depth (m)", y = "Water Temperature (C)") +
+  theme_classic()
 
 ```
 
@@ -65,6 +79,11 @@ We are only interested in the `Chla_ugL` at the surface of each reservoir. [Filt
 The column name `Date` is not an accurate name for the column because it include the time of day as well.  [Rename](https://r4ds.hadley.nz/data-transform.html#rename) the column to `datetime` and save the updated data frame. 
 
 ```{r}
+#3
+df3 <- df |> filter(Depth_m < 1) |> select(Reservoir:Depth_m, Chla_ugL)
+
+#4
+df3 <- df3 |> rename("datetime" = `Date`)
 
 ```
 
@@ -75,6 +94,7 @@ In the analysis below, you will need a column that is the year.  Apply the funct
 
 
 ```{r}
+df3 <- df3 |> mutate(year = year(datetime))
 
 ```
 
