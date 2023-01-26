@@ -28,7 +28,15 @@ The Reservoir column is different reservoirs in the Roanoke, VA area that a set 
 Read the data file into R. This file is directly streamed in R memory from a url, rather than downloaded and saved locally.
 
 ```{r}
-df <- read_csv("https://pasta.lternet.edu/package/data/eml/edi/200/12/0a62d1946e8d9a511bc1404e69e59b8c")
+#df <- read_csv("https://pasta.lternet.edu/package/data/eml/edi/200/12/0a62d1946e8d9a511bc1404e69e59b8c")
+
+file_name <- "https://pasta.lternet.edu/package/data/eml/edi/200/12/0a62d1946e8d9a511bc1404e69e59b8c"
+
+download.file(url = file_name, destfile = "data_raw/assignment2_water_quality_raw.csv", method = "curl")
+
+
+df <- read_csv(“data_raw/assignment2_water_quality_raw.csv”)
+
 ```
 
 # Excerise 1
@@ -48,8 +56,13 @@ ncol(df2)
 
 ## Question 1:
 
-- Describe the data set that was imported above (`df`) to the best of your ability given the documentation provided: what are the columns and units? Where do the numbers come from? 
+- Describe the data set that was imported above (`df`) to the best of your ability given the documentation provided: what are the columns and units? Where do the numbers come from?
+
+#Q1 Answer: Within df, there are 996363 observations. There are 25 columns: Reservoir (name of reservoir), Site (site number of each data point), Date (ymd & time), Depth (meters), Temperature (celcius), dissolved oxygen (mgl), dissolved oxygen (pSat), conductivity (uscm), specific conductance (uScm), chlorophyll-a (ugL), water turbidity, water pH, reduction potential (mV), Photosynthetically active radiation (umolm2s), descent rate (m/s). The numbers are data collected from techologies of specific points at a site in a reservoir of a certain characteristic (such as depth, temperature, surface chlorophyll-a. 
+
 - What value is used for missing values?  What is the interpretation of missing values?
+
+#Q2 Answer: The value "NA" is used for missing values. "NA" stands for nonapplicable, so anytime a function is run on any NA values, R cannot compute and it will output another NA.
 
 ## Question 2
 
@@ -63,6 +76,8 @@ ggplot(df2, aes(x = Depth_m, y = Temp_C)) +
   geom_point() +
   labs(x = "Depth (m)", y = "Water Temperature (C)") +
   theme_classic()
+
+#Answer: The water temperature closest to the surface is typically greater than the water temperature at higher depths. This might be explained by the water's exposure to the sun. The water at the surface is in more direct sunlight therefore being exposed to more heat from the sun, whereas the water at higher depths are gradually being exposed to less and less sunlight, which explains the downward curve of the graph as depth increases. 
 
 ```
 
@@ -129,6 +144,8 @@ How many different reservoirs are in the dataset and what are their names? Hint:
 ```{r}
 df3 |> distinct(Reservoir)
 
+#Answer: There are 5 different reservoirs known as "BVR", "CCR", "FCR", "GWR", and "SHR."
+
 ```
 
 ## Question 9
@@ -136,8 +153,9 @@ df3 |> distinct(Reservoir)
 Which reservoir has the highest mean surface chlorophyll-a? Hint: use `group_by()` and `summarize()` [combination](https://r4ds.hadley.nz/data-transform.html#groups)
 
 ```{r}
-df3 |> group_by(Reservoir) |> summarize(meanChla = mean(Chla_ugL))
+df3 |> group_by(Reservoir) |> summarize(meanChla = mean(Chla_ugL, na.rm = TRUE))
 
+#Answer: Reservoir GWR has the highest mean surface chlorophyll-a of 3.2247313. 
 
 ```
 
@@ -146,7 +164,9 @@ df3 |> group_by(Reservoir) |> summarize(meanChla = mean(Chla_ugL))
 Which reservoir has the highest observed surface chlorophyll-a?
 
 ```{r}
+df3 |> group_by(Reservoir) |> summarize(maxChla = max(Chla_ugL, na.rm = TRUE))
 
+#Answer: Reservoir FCR has the highest observed surface chlorophyll-a of 258.2027. 
 ```
 
 # Exercise 4
@@ -158,6 +178,8 @@ Exercise 4 dives deeper into the data.
 Plot the surface chlorophyll-a concentration for each year (averaged across reservoirs) and describe how surface chlorophyll-a is changing over time.
 
 ```{r}
+
+
 
 ```
 
