@@ -35,7 +35,7 @@ file_name <- "https://pasta.lternet.edu/package/data/eml/edi/200/12/0a62d1946e8d
 download.file(url = file_name, destfile = "data_raw/assignment2_water_quality_raw.csv", method = "curl")
 
 
-df <- read_csv(“data_raw/assignment2_water_quality_raw.csv”)
+#df <- read_csv(“data_raw/assignment2_water_quality_raw.csv”)
 
 ```
 
@@ -178,8 +178,14 @@ Exercise 4 dives deeper into the data.
 Plot the surface chlorophyll-a concentration for each year (averaged across reservoirs) and describe how surface chlorophyll-a is changing over time.
 
 ```{r}
+df3 |> group_by(year) |> 
+  summarize(meanChla = mean(Chla_ugL, na.rm = TRUE)) |> 
+  ggplot(aes(year, meanChla)) + 
+  geom_line() +
+  theme_classic() +
+  labs(x = "Year", y = "Surface Chlorophyll-a Concentration Mean (ugL)")
 
-
+#Answer: 
 
 ```
 
@@ -188,6 +194,14 @@ Plot the surface chlorophyll-a concentration for each year (averaged across rese
 Plot the annual mean surface chlorophyll-a concentration for each year for each reservoir and describe how the patterns differ from the plot in Question 11.  
 
 ```{r}
+df3 |> group_by(year, Reservoir) |> 
+  summarize(meanChla = mean(Chla_ugL, na.rm = TRUE)) |> 
+  ggplot(aes(year, meanChla, color = Reservoir)) + 
+  geom_line() +
+  theme_classic() +
+  labs(x = "Year", y = "Surface Chlorophyll-a Concentration Mean (ugL)")
+
+
 
 ```
 
@@ -196,6 +210,12 @@ Plot the annual mean surface chlorophyll-a concentration for each year for each 
 Plot the mean surface chlorophyll-a concentration by month for each reservoir and describe how the month of peak chlorophyll-a is similar or different across the reservoirs.
 
 ```{r}
+df3 |> group_by(month, Reservoir) |> 
+  summarize(meanChla = mean(Chla_ugL, na.rm = TRUE)) |> 
+  ggplot(aes(month, meanChla, color = Reservoir)) + 
+  geom_line() +
+  theme_classic() +
+  labs(x = "Month", y = "Surface Chlorophyll-a Concentration Mean (ugL)")
 
 ```
 
@@ -209,6 +229,18 @@ Plot the difference in the annual mean chlorophyll-a between `BVR` and `FCR`.  H
 
 
 ```{r}
+df3_w <- df3 |> group_by(year, Reservoir) |> 
+  summarize(meanChla = mean(Chla_ugL, na.rm = TRUE))
+
+df3_w <- df3_w |> pivot_wider(names_from = Reservoir, values_from = meanChla)
+
+df3_w <- df3_w |> mutate(BVR_FCR = BVR - FCR)
+
+ggplot(df3_w, aes(year, BVR_FCR)) + 
+  geom_line() +
+  theme_classic() +
+  labs(x = "Year", y = "Surface Chlorophyll-a Concentration Mean (ugL)") + 
+  ggtitle("Difference in Mean Chlorophyll-a between Reservoirs BVR & FCR")
 
 ```
 
@@ -221,6 +253,13 @@ This exercise is focused on exporting the data and a plot
 Save the plot from Question 14 to a PNG named `question-14.png` in your repo top-level directory. Hint: use [ggsave()](https://r4ds.hadley.nz/data-visualize.html#sec-ggsave)
 
 ```{r}
+ggplot(df3_w, aes(year, BVR_FCR)) + 
+  geom_line() +
+  theme_classic() +
+  labs(x = "Year", y = "Surface Chlorophyll-a Concentration Mean (ugL)") + 
+  ggtitle("Difference in Mean Chlorophyll-a between Reservoirs BVR & FCR")
+
+ggsave(filename = "question-14.png")
 
 ```
 
