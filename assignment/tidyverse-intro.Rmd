@@ -268,6 +268,7 @@ ggsave(filename = "question-14.png")
 Write your cleaned data frame to your repo top-level directory with the filename of `introduction-cleaned-data.csv`.  Hint use [`write_csv()`](https://r4ds.hadley.nz/data-import.html#sec-writing-to-a-file)
 
 ```{r}
+write_csv(df3, "introduction-cleaned-data.csv")
 
 ```
 
