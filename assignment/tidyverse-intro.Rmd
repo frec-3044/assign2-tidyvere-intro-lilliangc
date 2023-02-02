@@ -28,11 +28,11 @@ The Reservoir column is different reservoirs in the Roanoke, VA area that a set 
 Read the data file into R. This file is directly streamed in R memory from a url, rather than downloaded and saved locally.
 
 ```{r}
-#df <- read_csv("https://pasta.lternet.edu/package/data/eml/edi/200/12/0a62d1946e8d9a511bc1404e69e59b8c")
+df <- read_csv("https://pasta.lternet.edu/package/data/eml/edi/200/12/0a62d1946e8d9a511bc1404e69e59b8c")
 
-file_name <- "https://pasta.lternet.edu/package/data/eml/edi/200/12/0a62d1946e8d9a511bc1404e69e59b8c"
+#file_name <- "https://pasta.lternet.edu/package/data/eml/edi/200/12/0a62d1946e8d9a511bc1404e69e59b8c"
 
-download.file(url = file_name, destfile = "data_raw/assignment2_water_quality_raw.csv", method = "curl")
+#download.file(url = file_name, destfile = "data_raw/assignment2_water_quality_raw.csv", method = "curl")
 
 
 #df <- read_csv(“data_raw/assignment2_water_quality_raw.csv”)
@@ -58,7 +58,7 @@ ncol(df2)
 
 - Describe the data set that was imported above (`df`) to the best of your ability given the documentation provided: what are the columns and units? Where do the numbers come from?
 
-#Q1 Answer: Within df, there are 996363 observations. There are 25 columns: Reservoir (name of reservoir), Site (site number of each data point), Date (ymd & time), Depth (meters), Temperature (celcius), dissolved oxygen (mgl), dissolved oxygen (pSat), conductivity (uscm), specific conductance (uScm), chlorophyll-a (ugL), water turbidity, water pH, reduction potential (mV), Photosynthetically active radiation (umolm2s), descent rate (m/s). The numbers are data collected from techologies of specific points at a site in a reservoir of a certain characteristic (such as depth, temperature, surface chlorophyll-a. 
+#Q1 Answer: Within df, there are 996363 observations. There are 25 columns: Reservoir (name of reservoir), Site (site number of each data point), Date (ymd & time), Depth (meters), Temperature (celcius), dissolved oxygen (mgl), dissolved oxygen (pSat), conductivity (uscm), specific conductance (uScm), chlorophyll-a (ugL), water turbidity, water pH, reduction potential (mV), Photosynthetically active radiation (umolm2s), descent rate (m/s). The numbers are data collected from technologies of specific points at a site in a reservoir of a certain characteristic (such as depth, temperature, surface chlorophyll-a. 
 
 - What value is used for missing values?  What is the interpretation of missing values?
 
@@ -182,10 +182,11 @@ df3 |> group_by(year) |>
   summarize(meanChla = mean(Chla_ugL, na.rm = TRUE)) |> 
   ggplot(aes(year, meanChla)) + 
   geom_line() +
+  scale_x_continuous(breaks = seq(2013, 2022, by = 1)) +
   theme_classic() +
   labs(x = "Year", y = "Surface Chlorophyll-a Concentration Mean (ugL)")
 
-#Answer: 
+#Answer:  The surface chlorophyll-a concentration (averaged across reservoirs) appears to be alternating between high and low every 1-2 years. 
 
 ```
 
@@ -198,10 +199,12 @@ df3 |> group_by(year, Reservoir) |>
   summarize(meanChla = mean(Chla_ugL, na.rm = TRUE)) |> 
   ggplot(aes(year, meanChla, color = Reservoir)) + 
   geom_line() +
+  scale_x_continuous(breaks = seq(2013, 2022, by = 1)) +
   theme_classic() +
   labs(x = "Year", y = "Surface Chlorophyll-a Concentration Mean (ugL)")
 
 
+#Answer: When the data points are separated by their respective reservoir, you can see that the trends are more consistent within each reservoir. For example, in the graph in question 11, the data line is going from high to low, but in this graph, reservoir BVR and FCR are at a relatively high value but reservoir SHR, GWR, and SHR are relatively low, so there is a clear separation which makes the plot more meaningful and easier to analyze. 
 
 ```
 
@@ -214,8 +217,12 @@ df3 |> group_by(month, Reservoir) |>
   summarize(meanChla = mean(Chla_ugL, na.rm = TRUE)) |> 
   ggplot(aes(month, meanChla, color = Reservoir)) + 
   geom_line() +
+  scale_x_continuous(breaks = seq(2, 12, by = 1)) +
   theme_classic() +
   labs(x = "Month", y = "Surface Chlorophyll-a Concentration Mean (ugL)")
+
+
+#Answer: When looking at the reservoir measurements comparatively, they seem to follow the same trends with the chlorophyll-a concentrations lower in early and later months and the chlorophyll-a concentrations increasing and peaking during the summer months. In September particulary, all of the reservoirs show a spike in chlorophyll-a concentration. 
 
 ```
 
@@ -238,6 +245,7 @@ df3_w <- df3_w |> mutate(BVR_FCR = BVR - FCR)
 
 ggplot(df3_w, aes(year, BVR_FCR)) + 
   geom_line() +
+  scale_x_continuous(breaks = seq(2013, 2022, by = 1)) +
   theme_classic() +
   labs(x = "Year", y = "Surface Chlorophyll-a Concentration Mean (ugL)") + 
   ggtitle("Difference in Mean Chlorophyll-a between Reservoirs BVR & FCR")
@@ -255,6 +263,7 @@ Save the plot from Question 14 to a PNG named `question-14.png` in your repo top
 ```{r}
 ggplot(df3_w, aes(year, BVR_FCR)) + 
   geom_line() +
+  scale_x_continuous(breaks = seq(2013, 2022, by = 1)) +
   theme_classic() +
   labs(x = "Year", y = "Surface Chlorophyll-a Concentration Mean (ugL)") + 
   ggtitle("Difference in Mean Chlorophyll-a between Reservoirs BVR & FCR")
